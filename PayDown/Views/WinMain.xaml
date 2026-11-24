@@ -1,0 +1,89 @@
+﻿<syncfusion:ChromelessWindow x:Class="PayDown.Views.WinMain"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:listCollection="clr-namespace:System.Collections;assembly=mscorlib"
+    xmlns:local="clr-namespace:PayDown"                    
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+    xmlns:skinManager="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
+    skinManager:SfSkinManager.Theme="{skinManager:SkinManagerExtension ThemeName=Material3Light}"
+    Title="{Binding AppTitle}"
+    BorderThickness="0"
+    AllowsTransparency="True"
+    CloseButtonTemplate="{DynamicResource ProductsWindowCloseButtonTemplate}"
+    RestoreButtonTemplate="{DynamicResource ProductsWindowRestoreButtonTemplate}"
+    MaximizeButtonTemplate="{DynamicResource ProductsWindowMaximizeButtonTemplate}"
+    MinimizeButtonTemplate="{DynamicResource ProductsWindowMinimizeButtonTemplate}"
+    ResizeBorderThickness="0"
+    ShowIcon="False"
+    Icon="/Assets/App.ico"
+    TitleBarBackground="{Binding TitleBarBackground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+    TitleBarForeground="{Binding TitleBarForeground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+    TitleBarHeight="40"
+    TitleTextAlignment="Center"
+    TitleFontSize="14"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Normal"
+    Closed="ChromelessWindow_Closed"
+    Loaded="ChromelessWindow_Loaded"
+    MinHeight="940"
+    MinWidth="1600"
+    Closing="ChromelessWindow_Closing"
+    mc:Ignorable="d" FontFamily="Copperplate Gothic Light" ShowMaximizeButton="True" ShowMinimizeButton="True">
+
+    <syncfusion:ChromelessWindow.DataContext>
+        <local:ViewModel/>
+    </syncfusion:ChromelessWindow.DataContext>
+
+    <syncfusion:ChromelessWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </syncfusion:ChromelessWindow.Resources>
+    <syncfusion:ChromelessWindow.LeftHeaderItemsSource>
+        <listCollection:ArrayList>
+            <Image
+                Width="24"
+                Height="24"
+                Margin="12,0,3,0"
+                Source="/Views/App.png" />
+        </listCollection:ArrayList>
+    </syncfusion:ChromelessWindow.LeftHeaderItemsSource>
+
+    <Grid x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <syncfusion:TabControlExt
+                x:Name="TabControl"
+                BorderThickness="1"
+                EnableLabelEdit="False"
+                TabItemHeaderStyle="Curve"
+                ShowTabItemContextMenu="False"
+                TabItemLayout="SingleLine"
+                TabItemSize="ShrinkToFit"
+                SelectedIndex="0"
+                SelectedIndexChanged="TabControl_SelectedIndexChanged"
+                >
+            </syncfusion:TabControlExt>
+
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="95"/>
+                <ColumnDefinition Width="169"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" TextAlignment="Right" TextWrapping="Wrap" Text="DateTime:" FontFamily="Copperplate Gothic Light" Height="12" VerticalAlignment="Center" Margin="8,0,10,0"/>
+            <TextBlock x:Name="lblPCDateTime" Grid.Column="2" TextAlignment="Left" Text="" FontFamily="Copperplate Gothic Light" Height="12" VerticalAlignment="Center" Margin="10,0,10,0"/>
+        </Grid>
+    </Grid>
+
+</syncfusion:ChromelessWindow>

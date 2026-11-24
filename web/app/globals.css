@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.section-header {
+  @apply bg-brand-navy text-white font-display font-bold uppercase tracking-wide px-4 py-2 rounded-t-md text-sm;
+}
+
+.panel {
+  @apply bg-white rounded-md shadow-sm border border-gray-200;
+}
+
+.field-input {
+  @apply w-full rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue;
+}
+
+.field-label {
+  @apply text-xs font-semibold text-gray-600 mb-1 block;
+}
+
+.btn-primary {
+  @apply rounded bg-brand-blue px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow hover:brightness-110 disabled:opacity-50;
+}
+.btn-secondary {
+  @apply rounded border border-brand-blue px-4 py-2 text-sm font-semibold text-brand-blue hover:bg-blue-50 disabled:opacity-50;
+}
+
+/* Dark navy backdrop with a soft blue glow, matching the Blueprint artwork. */
+.brand-bg {
+  background-color: #050b1a;
+  background-image:
+    radial-gradient(ellipse at 80% 0%, rgba(20, 99, 255, 0.35), transparent 55%),
+    radial-gradient(ellipse at 0% 100%, rgba(10, 31, 92, 0.9), transparent 60%);
+}
