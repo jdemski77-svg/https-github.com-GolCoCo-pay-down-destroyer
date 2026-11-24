@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 /* eslint-disable @next/next/no-img-element */
 import { base44, errorStatus } from '@/lib/base44Client';
-import { goToCheckout } from '@/lib/membership';
+import { JOIN_URL } from '@/lib/membership';
 
 /** What logged-out visitors see: a Join button for new members and a login form for existing ones. */
 export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) {
@@ -13,7 +13,6 @@ export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) 
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [busy, setBusy] = useState(false);
-  const [joining, setJoining] = useState(false);
   const [mode, setMode] = useState<'login' | 'reset'>('login');
 
   useEffect(() => {
@@ -23,21 +22,7 @@ export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) 
     } catch {
       // ignore storage failures (private browsing, etc.)
     }
-    if (new URLSearchParams(window.location.search).get('checkout') === 'canceled') {
-      setInfo('Checkout was canceled. You have not been charged.');
-    }
   }, []);
-
-  async function handleJoin() {
-    setError('');
-    setJoining(true);
-    try {
-      await goToCheckout();
-    } catch {
-      setError('Could not open the payment page. Please try again in a moment.');
-      setJoining(false);
-    }
-  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -117,11 +102,17 @@ export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) 
             <p className="mt-2 text-sm text-gray-600">
               Join the Pay Down Blueprint to unlock the members area and the Pay Down app.
             </p>
-            <button type="button" onClick={handleJoin} disabled={joining} className="btn-primary mt-4 w-full py-3 text-base">
-              {joining ? 'Opening secure checkout…' : 'Join now'}
-            </button>
+            {JOIN_URL && (
+              <a href={JOIN_URL} className="btn-primary mt-4 block w-full py-3 text-center text-base">
+                Join now
+              </a>
+            )}
             <p className="mt-2 text-xs text-gray-500">
-              After you pay, you&apos;ll create your account and password and go straight in.
+              Already paid?{' '}
+              <a href="/join/" className="font-semibold text-brand-blue underline">
+                Create your account
+              </a>{' '}
+              with the email you paid with.
             </p>
           </div>
 

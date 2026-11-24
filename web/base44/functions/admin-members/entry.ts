@@ -1,10 +1,9 @@
 // Admin-only member management.
-//   { action: "list" }                                   → all users with membership info
-//   { action: "revoke", userId, cancelSubscription? }    → block access now (optionally stop billing)
-//   { action: "restore", userId }                        → undo a revoke; access follows their payments again
-//   { action: "grant", userId }                          → free access without paying
+//   { action: "list" }               → everyone with access records and/or accounts
+//   { action: "revoke", email }      → turn access off now
+//   { action: "grant", email }       → turn access on (also adds someone by email)
 import { createClientFromRequest } from "npm:@base44/sdk";
-import { json, syncUser } from "../../shared/membership.ts";
+import { json, normalizeEmail, setAccessAndUser } from "../../shared/membership.ts";
 
 export default async function (req: Request): Promise<Response> {
   const base44 = createClientFromRequest(req);
@@ -17,55 +16,53 @@ export default async function (req: Request): Promise<Response> {
   if (me?.role !== "admin") return json({ error: "forbidden" }, 403);
 
   const body = await req.json().catch(() => ({}));
-  const users = base44.asServiceRole.entities.User;
 
   if (body.action === "list") {
-    const all = await users.list("-created_date", 1000);
-    return json({
-      // deno-lint-ignore no-explicit-any
-      members: all.map((u: any) => ({
-        id: u.id,
-        email: u.email,
-        full_name: u.full_name ?? null,
-        role: u.role,
-        created_date: u.created_date,
-        membership_status: u.membership_status ?? "none",
-        membership_source: u.membership_source ?? null,
-        has_subscription: Boolean(u.membership_subscription_id),
-      })),
-    });
-  }
-
-  if (typeof body.userId !== "string" || !body.userId) return json({ error: "missing_user" }, 400);
-  const target = await users.get(body.userId);
-  if (!target) return json({ error: "not_found" }, 404);
-
-  if (body.action === "revoke") {
-    let subscription: string | null = null;
-    if (body.cancelSubscription && target.membership_subscription_id) {
-      try {
-        const res = await base44.asServiceRole.payments.cancelSubscription(target.membership_subscription_id);
-        subscription = res.status;
-      } catch (err) {
-        console.error("cancelSubscription failed", err);
-        // deno-lint-ignore no-explicit-any
-        subscription = `cancel_failed: ${(err as any)?.code ?? "unknown"}`;
-      }
+    const [users, access] = await Promise.all([
+      base44.asServiceRole.entities.User.list("-created_date", 5000),
+      base44.asServiceRole.entities.MemberAccess.list("-updated_date", 5000),
+    ]);
+    // deno-lint-ignore no-explicit-any
+    const byEmail = new Map<string, any>();
+    // deno-lint-ignore no-explicit-any
+    for (const a of access as any[]) {
+      byEmail.set(a.email, {
+        email: a.email,
+        full_name: a.full_name ?? null,
+        status: a.status,
+        source: a.source ?? null,
+        has_account: false,
+        role: null,
+        joined: null,
+        updated: a.updated_date ?? a.created_date,
+      });
     }
-    await users.update(target.id, { membership_status: "revoked" });
-    return json({ ok: true, membership_status: "revoked", subscription });
+    // deno-lint-ignore no-explicit-any
+    for (const u of users as any[]) {
+      const email = String(u.email).toLowerCase();
+      const row = byEmail.get(email) ?? { email, status: "none", source: null, updated: null };
+      byEmail.set(email, {
+        ...row,
+        full_name: u.full_name || row.full_name || null,
+        has_account: true,
+        role: u.role,
+        joined: u.created_date,
+      });
+    }
+    return json({ members: [...byEmail.values()] });
   }
 
-  if (body.action === "grant") {
-    await users.update(target.id, { membership_status: "active", membership_source: "manual" });
-    return json({ ok: true, membership_status: "active" });
-  }
+  const email = normalizeEmail(body.email);
+  if (!email) return json({ error: "Enter a valid email address." }, 400);
 
-  if (body.action === "restore") {
-    // Clear the block, then recompute from their payments right away.
-    await users.update(target.id, { membership_status: "inactive", membership_source: "purchase" });
-    const status = await syncUser(base44, { ...target, membership_status: "inactive", membership_source: "purchase" });
-    return json({ ok: true, membership_status: status });
+  if (body.action === "revoke" || body.action === "grant") {
+    const status = body.action === "grant" ? "active" : "revoked";
+    const record = await setAccessAndUser(base44, email, {
+      status,
+      source: "admin",
+      last_event: `admin:${body.action} by ${me.email} ${new Date().toISOString()}`,
+    });
+    return json({ ok: true, email, status: record.status });
   }
 
   return json({ error: "unknown_action" }, 400);

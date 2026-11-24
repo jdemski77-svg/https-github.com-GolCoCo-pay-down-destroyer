@@ -2,15 +2,11 @@ import { base44 } from '@/lib/base44Client';
 
 export type MembershipStatus = 'none' | 'active' | 'inactive' | 'revoked';
 
-/** Asks the backend to re-check this user's payment. */
+/** Your GoHighLevel sales/checkout page. Set NEXT_PUBLIC_JOIN_URL in .env.local. */
+export const JOIN_URL = process.env.NEXT_PUBLIC_JOIN_URL || '';
+
+/** Asks the server to re-check this user's access. */
 export async function syncMembership(): Promise<{ status: MembershipStatus; admin: boolean }> {
   const res = await base44.functions.invoke('sync-membership', {});
   return res.data;
-}
-
-/** Creates a checkout and sends the browser to the payment page. */
-export async function goToCheckout(): Promise<void> {
-  const res = await base44.functions.invoke('start-checkout', {});
-  if (!res.data?.url) throw new Error('Could not start checkout.');
-  window.location.assign(res.data.url);
 }

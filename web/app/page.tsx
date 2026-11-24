@@ -52,6 +52,6 @@ export default function Home() {
     return <div className="brand-bg flex h-screen items-center justify-center text-white/70">Loading…</div>;
   }
   if (gate.kind === 'loggedOut') return <LoginScreen onLoggedIn={refresh} />;
-  if (gate.kind === 'notMember') return <Paywall status={gate.status} email={gate.user.email} />;
+  if (gate.kind === 'notMember') return <Paywall status={gate.status} email={gate.user.email} onCheckAgain={refresh} />;
   return <AppScreen user={gate.user} isAdmin={gate.isAdmin} />;
 }

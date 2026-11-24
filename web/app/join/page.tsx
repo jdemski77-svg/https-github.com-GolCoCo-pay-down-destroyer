@@ -8,14 +8,12 @@ import { syncMembership } from '@/lib/membership';
 type Step = 'loading' | 'form' | 'verify' | 'finishing';
 
 /**
- * Where buyers land after paying. They create their account here (email is locked to
- * the one they paid with), confirm the emailed code, and go straight into the app.
+ * Where buyers land after paying in GoHighLevel. They create their account here with the
+ * email they paid with, confirm the emailed code, and go straight into the app.
  */
 export default function JoinPage() {
   const [step, setStep] = useState<Step>('loading');
   const [email, setEmail] = useState('');
-  const [emailLocked, setEmailLocked] = useState(false);
-  const [paymentPending, setPaymentPending] = useState(false);
   const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -32,20 +30,9 @@ export default function JoinPage() {
         window.location.replace('/');
         return;
       }
-      const params = new URLSearchParams(window.location.search);
-      const checkoutId = params.get('session_id') || params.get('checkout_id');
-      if (checkoutId) {
-        try {
-          const res = await base44.functions.invoke('checkout-info', { checkout_id: checkoutId });
-          if (res.data?.email) {
-            setEmail(res.data.email);
-            setEmailLocked(true);
-          }
-          setPaymentPending(res.data?.status !== 'paid');
-        } catch {
-          // Couldn't look it up — let them type the email they paid with.
-        }
-      }
+      // GoHighLevel's thank-you page can link here as /join/?email={{contact.email}}
+      const fromLink = new URLSearchParams(window.location.search).get('email');
+      if (fromLink) setEmail(fromLink.trim());
       setStep('form');
     })();
   }, []);
@@ -114,7 +101,7 @@ export default function JoinPage() {
   if (step === 'loading' || step === 'finishing') {
     return (
       <AuthCard title="Welcome">
-        <p className="text-sm text-gray-600">{step === 'loading' ? 'Confirming your payment…' : 'Opening the members area…'}</p>
+        <p className="text-sm text-gray-600">{step === 'loading' ? 'Loading…' : 'Opening the members area…'}</p>
       </AuthCard>
     );
   }
@@ -148,23 +135,20 @@ export default function JoinPage() {
 
   return (
     <AuthCard title="Create your account">
-      <p className="text-sm font-semibold text-brand-green">
-        {paymentPending ? 'Your payment is processing.' : 'Thank you — your payment went through!'}
-      </p>
+      <p className="text-sm font-semibold text-brand-green">Thank you for joining!</p>
       <p className="text-sm text-gray-600">Set up your login for the Pay Down members area.</p>
       <form onSubmit={handleRegister} className="flex flex-col gap-3">
         <div>
           <label className="field-label">Email</label>
           <input
-            className="field-input disabled:bg-gray-100"
+            className="field-input"
             type="email"
             autoComplete="username"
             value={email}
-            disabled={emailLocked}
             onChange={(e) => setEmail(e.target.value)}
           />
           <p className="mt-1 text-xs text-gray-500">
-            {emailLocked ? 'This is the email you paid with.' : 'Use the same email you paid with.'}
+            Use the same email you paid with — that&apos;s how we find your membership.
           </p>
         </div>
         <div>

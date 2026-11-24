@@ -1,0 +1,26 @@
+// Who has paid (or been given access), one record per email.
+// Filled by GoHighLevel (ghl-webhook) and by admins in the Members tab.
+// Members can't read or change these — only admins and the server.
+{
+  "name": "MemberAccess",
+  "type": "object",
+  "properties": {
+    "email": { "type": "string", "format": "email", "description": "Buyer email, stored lowercase" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "inactive", "revoked"],
+      "description": "active = may use the tool. inactive = GoHighLevel reported a cancel/refund. revoked = an admin turned access off."
+    },
+    "source": { "type": "string", "enum": ["ghl", "admin"], "description": "Who last changed this record" },
+    "full_name": { "type": "string" },
+    "ghl_contact_id": { "type": "string" },
+    "last_event": { "type": "string", "description": "Last GoHighLevel action or admin action, for your records" }
+  },
+  "required": ["email", "status"],
+  "rls": {
+    "read": { "user_condition": { "role": "admin" } },
+    "create": { "user_condition": { "role": "admin" } },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

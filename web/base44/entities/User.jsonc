@@ -1,7 +1,7 @@
 // Custom fields on the built-in User entity.
-// Every membership field is write-locked: members can't change them from the app
-// (not even with updateMe). Only the backend functions (service role) and the
-// app's editors in the Base44 dashboard can.
+// Both fields are write-locked: members can't change them from the app (not even
+// with updateMe). Only the backend functions and the app's editors in the Base44
+// dashboard can. PayDownPlan's access rules trust membership_status.
 {
   "name": "User",
   "type": "object",
@@ -9,24 +9,13 @@
     "membership_status": {
       "type": "string",
       "enum": ["none", "active", "inactive", "revoked"],
-      "description": "active = can use the tool. revoked = an admin removed access; payments are ignored until restored.",
-      "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
-    },
-    "membership_source": {
-      "type": "string",
-      "enum": ["purchase", "manual"],
-      "description": "purchase = access comes from a paid checkout. manual = an admin granted free access.",
-      "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
-    },
-    "membership_subscription_id": {
-      "type": "string",
-      "description": "Payment provider subscription id of the member's purchase, if any.",
+      "description": "Copied from MemberAccess for this user's email. active = can use the tool.",
       "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
     },
     "membership_checked_at": {
       "type": "string",
       "format": "date-time",
-      "description": "Last time the backend re-checked this member's payment.",
+      "description": "Last time the server re-checked this member's access.",
       "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
     }
   }
