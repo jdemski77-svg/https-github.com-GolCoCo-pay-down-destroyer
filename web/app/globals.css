@@ -25,6 +25,17 @@ input[type='number'] {
   @apply bg-brand-navy text-white font-display font-bold uppercase tracking-wide px-4 py-2 rounded-t-md text-sm;
 }
 
+/* Section headers take the color of the tab they're on. */
+.theme-income .section-header {
+  @apply bg-brand-green;
+}
+.theme-debts .section-header {
+  @apply bg-brand-red;
+}
+.theme-implement .section-header {
+  @apply bg-brand-magenta;
+}
+
 .panel {
   @apply bg-white rounded-md shadow-sm border border-gray-200;
 }

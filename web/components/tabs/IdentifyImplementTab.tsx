@@ -99,7 +99,7 @@ export default function IdentifyImplementTab() {
                 key={c.slot}
                 onClick={() => selectDestroyer(c)}
                 className={`flex w-full items-center justify-between border-b border-gray-100 px-3 py-2 text-sm ${
-                  selectedSlot === c.slot ? 'bg-brand-blue text-white' : 'hover:bg-gray-50'
+                  selectedSlot === c.slot ? 'bg-brand-magenta text-white' : 'hover:bg-gray-50'
                 }`}
               >
                 <span className="w-8 text-xs opacity-70">{i + 1}.</span>
@@ -151,7 +151,7 @@ export default function IdentifyImplementTab() {
         <div className="overflow-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-brand-blue text-white">
+              <tr className="bg-brand-magenta text-white">
                 <th className="p-2 text-left">Months to Payoff</th>
                 <th className="p-2 text-right">Monthly Starting Balance</th>
                 <th className="p-2 text-right">Available Income</th>

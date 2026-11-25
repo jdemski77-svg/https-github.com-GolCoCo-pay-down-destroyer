@@ -22,7 +22,7 @@ export default function AppScreen({ user, isAdmin }: { user: AppUser; isAdmin: b
   const tabs: { key: TabKey; label: string; activeClass: string }[] = [
     { key: 'income', label: 'Organize Income', activeClass: 'bg-brand-green text-white' },
     { key: 'debts', label: 'Organize Debts', activeClass: 'bg-brand-red text-white' },
-    { key: 'implement', label: 'Identify & Implement', activeClass: 'bg-brand-blue text-white' },
+    { key: 'implement', label: 'Identify & Implement', activeClass: 'bg-brand-magenta text-white' },
     { key: 'account', label: 'My Account', activeClass: 'bg-brand-navy text-white' },
     ...(isAdmin ? [{ key: 'members' as TabKey, label: 'Members', activeClass: 'bg-brand-ink text-white' }] : []),
   ];
@@ -43,7 +43,7 @@ export default function AppScreen({ user, isAdmin }: { user: AppUser; isAdmin: b
           </button>
         ))}
       </div>
-      <div className="flex-1 overflow-auto bg-gray-100 p-4">
+      <div className={`theme-${tab} flex-1 overflow-auto bg-gray-100 p-4`}>
         {tab === 'income' && <IncomeTab />}
         {tab === 'debts' && <DebtsTab />}
         {tab === 'implement' && <IdentifyImplementTab />}
