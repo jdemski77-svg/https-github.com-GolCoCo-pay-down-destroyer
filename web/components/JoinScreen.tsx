@@ -14,7 +14,7 @@ async function claimExisting() {
 }
 
 /**
- * Where clients create their members-area account: email + password, confirm the
+ * Where clients create their login for the Pay Down Blueprint App: email + password, confirm the
  * emailed code, and they go straight into the app.
  *
  * variant "existing" is the separate, expiring link for people who already bought
@@ -120,8 +120,8 @@ export default function JoinScreen({ variant = 'new' }: { variant?: 'new' | 'exi
       <AuthCard title="Link expired">
         <p className="text-sm font-semibold text-gray-700">This link has expired.</p>
         <p className="text-sm text-gray-600">
-          The free account offer for existing Blueprint customers ended on December 25. If you already created your
-          account, you can still log in.
+          The access link for existing Blueprint customers ended on December 25. If you already created your
+          login, you can still sign in.
         </p>
         <a href="/" className="btn-primary text-center">
           Go to member login
@@ -133,7 +133,7 @@ export default function JoinScreen({ variant = 'new' }: { variant?: 'new' | 'exi
   if (step === 'loading' || step === 'finishing') {
     return (
       <AuthCard title="Welcome">
-        <p className="text-sm text-gray-600">{step === 'loading' ? 'Loading…' : 'Opening the members area…'}</p>
+        <p className="text-sm text-gray-600">{step === 'loading' ? 'Loading…' : 'Opening the Pay Down Blueprint App…'}</p>
       </AuthCard>
     );
   }
@@ -166,20 +166,18 @@ export default function JoinScreen({ variant = 'new' }: { variant?: 'new' | 'exi
   }
 
   return (
-    <AuthCard title={existing ? 'Create your free account' : 'Create your account'}>
-      {existing ? (
+    <AuthCard title="Create your login">
+      <h1 className="font-display text-xl uppercase leading-tight text-brand-navy">
+        Create your login to access the <span className="text-brand-blue">Pay Down Blueprint App</span>
+      </h1>
+      {existing && (
         <>
-          <h1 className="font-display text-xl uppercase leading-tight text-brand-navy">
-            Create your Free Account to Access the <span className="text-brand-blue">Blueprint App</span>
-          </h1>
           <p className="text-sm text-gray-600">
-            For customers who already purchased The Pay Down Blueprint course and downloadable app. Your new account gives
-            you easy online access — no download needed.
+            For customers who already purchased The Pay Down Blueprint course and downloadable app. Your login gives you
+            easy online access — no download needed.
           </p>
           <p className="text-xs font-semibold text-brand-red">This link expires December 25, 2026.</p>
         </>
-      ) : (
-        <p className="text-sm text-gray-600">Set up your login for the Pay Down Blueprint members area.</p>
       )}
       <form onSubmit={handleRegister} className="flex flex-col gap-3">
         <div>
@@ -218,10 +216,10 @@ export default function JoinScreen({ variant = 'new' }: { variant?: 'new' | 'exi
         </div>
         {error && <p className="text-sm text-brand-red">{error}</p>}
         <button type="submit" disabled={busy} className="btn-primary">
-          {busy ? 'Creating account…' : existing ? 'Create my free account' : 'Create account'}
+          {busy ? 'Creating your login…' : 'Create my login'}
         </button>
         <a href="/" className="text-xs text-brand-blue underline">
-          Already have an account? Log in
+          Already have a login? Sign in
         </a>
       </form>
     </AuthCard>

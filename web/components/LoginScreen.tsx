@@ -96,13 +96,13 @@ export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) 
         <section className="flex flex-col gap-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <div className="rounded-lg bg-white p-6 text-gray-800 shadow-2xl">
             <h1 className="font-display text-2xl uppercase leading-tight text-brand-navy">
-              Welcome to the <span className="text-brand-blue">members area</span>
+              Welcome to the <span className="text-brand-blue">Pay Down Blueprint App</span>
             </h1>
             <p className="mt-2 text-sm text-gray-600">
               Your Pay Down Blueprint tools, training and tracking in one place.
             </p>
             <a href="/join/" className="btn-primary mt-4 block w-full py-3 text-center text-base">
-              Create your account
+              Create your login
             </a>
             <p className="mt-2 text-xs text-gray-500">First time here? Set up your login in under a minute.</p>
           </div>
