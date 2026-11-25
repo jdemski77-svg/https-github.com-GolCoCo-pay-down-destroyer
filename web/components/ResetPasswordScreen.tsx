@@ -5,7 +5,7 @@ import AuthCard from '@/components/AuthCard';
 import { base44, errorMessage } from '@/lib/base44Client';
 
 /** Landing page for the link in the "reset your password" email. */
-export default function ResetPasswordPage() {
+export default function ResetPasswordScreen() {
   const [token, setToken] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');

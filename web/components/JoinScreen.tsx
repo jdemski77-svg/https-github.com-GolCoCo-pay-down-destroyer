@@ -11,7 +11,7 @@ type Step = 'loading' | 'form' | 'verify' | 'finishing';
  * Where clients create their members-area account: email + password, confirm the
  * emailed code, and they go straight into the app.
  */
-export default function JoinPage() {
+export default function JoinScreen() {
   const [step, setStep] = useState<Step>('loading');
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
