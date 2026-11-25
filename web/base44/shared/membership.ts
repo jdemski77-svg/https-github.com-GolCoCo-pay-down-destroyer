@@ -63,3 +63,9 @@ export async function setStatus(base44: Client, email: string, status: Membershi
 export function json(body: unknown, status = 200): Response {
   return Response.json(body, { status });
 }
+
+/**
+ * Cutoff for the existing-customer link (/existing/): end of Dec 25, 2026,
+ * 11:59 PM US Eastern. Keep in sync with web/lib/offers.ts.
+ */
+export const EXISTING_CUSTOMER_DEADLINE = new Date("2026-12-26T05:00:00Z");

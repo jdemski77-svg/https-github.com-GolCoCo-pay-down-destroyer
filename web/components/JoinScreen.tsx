@@ -4,14 +4,24 @@ import { useEffect, useState } from 'react';
 import AuthCard from '@/components/AuthCard';
 import { base44, errorMessage, errorStatus } from '@/lib/base44Client';
 import { syncMembership } from '@/lib/membership';
+import { existingCustomerLinkOpen } from '@/lib/offers';
 
-type Step = 'loading' | 'form' | 'verify' | 'finishing';
+type Step = 'loading' | 'form' | 'verify' | 'finishing' | 'expired';
+
+/** Tags the account as an existing customer (server re-checks the deadline). */
+async function claimExisting() {
+  await base44.functions.invoke('claim-existing', {}).catch(() => null);
+}
 
 /**
  * Where clients create their members-area account: email + password, confirm the
  * emailed code, and they go straight into the app.
+ *
+ * variant "existing" is the separate, expiring link for people who already bought
+ * the downloadable course + app (/existing/).
  */
-export default function JoinScreen() {
+export default function JoinScreen({ variant = 'new' }: { variant?: 'new' | 'existing' }) {
+  const existing = variant === 'existing';
   const [step, setStep] = useState<Step>('loading');
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
@@ -24,8 +34,13 @@ export default function JoinScreen() {
 
   useEffect(() => {
     (async () => {
+      if (existing && !existingCustomerLinkOpen()) {
+        setStep('expired');
+        return;
+      }
       // Already logged in: go straight in.
       if (await base44.auth.isAuthenticated().catch(() => false)) {
+        if (existing) await claimExisting();
         await syncMembership().catch(() => null);
         window.location.replace('/');
         return;
@@ -35,6 +50,7 @@ export default function JoinScreen() {
       if (fromLink) setEmail(fromLink.trim());
       setStep('form');
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function finish() {
@@ -42,6 +58,7 @@ export default function JoinScreen() {
     try {
       await base44.auth.loginViaEmailPassword(email.trim(), password);
       if (fullName.trim()) await base44.auth.updateMe({ full_name: fullName.trim() }).catch(() => null);
+      if (existing) await claimExisting();
       await syncMembership().catch(() => null);
       window.location.replace('/');
     } catch (err) {
@@ -98,6 +115,21 @@ export default function JoinScreen() {
     }
   }
 
+  if (step === 'expired') {
+    return (
+      <AuthCard title="Link expired">
+        <p className="text-sm font-semibold text-gray-700">This link has expired.</p>
+        <p className="text-sm text-gray-600">
+          The free account offer for existing Blueprint customers ended on December 25. If you already created your
+          account, you can still log in.
+        </p>
+        <a href="/" className="btn-primary text-center">
+          Go to member login
+        </a>
+      </AuthCard>
+    );
+  }
+
   if (step === 'loading' || step === 'finishing') {
     return (
       <AuthCard title="Welcome">
@@ -134,8 +166,21 @@ export default function JoinScreen() {
   }
 
   return (
-    <AuthCard title="Create your account">
-      <p className="text-sm text-gray-600">Set up your login for the Pay Down Blueprint members area.</p>
+    <AuthCard title={existing ? 'Create your free account' : 'Create your account'}>
+      {existing ? (
+        <>
+          <h1 className="font-display text-xl uppercase leading-tight text-brand-navy">
+            Create your Free Account to Access the <span className="text-brand-blue">Blueprint App</span>
+          </h1>
+          <p className="text-sm text-gray-600">
+            For customers who already purchased The Pay Down Blueprint course and downloadable app. Your new account gives
+            you easy online access — no download needed.
+          </p>
+          <p className="text-xs font-semibold text-brand-red">This link expires December 25, 2026.</p>
+        </>
+      ) : (
+        <p className="text-sm text-gray-600">Set up your login for the Pay Down Blueprint members area.</p>
+      )}
       <form onSubmit={handleRegister} className="flex flex-col gap-3">
         <div>
           <label className="field-label">Email</label>
@@ -173,7 +218,7 @@ export default function JoinScreen() {
         </div>
         {error && <p className="text-sm text-brand-red">{error}</p>}
         <button type="submit" disabled={busy} className="btn-primary">
-          {busy ? 'Creating account…' : 'Create account'}
+          {busy ? 'Creating account…' : existing ? 'Create my free account' : 'Create account'}
         </button>
         <a href="/" className="text-xs text-brand-blue underline">
           Already have an account? Log in

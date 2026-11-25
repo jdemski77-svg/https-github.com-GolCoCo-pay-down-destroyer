@@ -13,6 +13,19 @@ No payments — you send clients the link and they sign up.
 3. Returning clients log in. **My Account** lets them change their password; **Forgot password?**
    is on the login screen.
 
+## Existing-customer link (expires)
+
+For people who already bought the downloadable course + app:
+**https://members.paydowndebtsolutions.com/existing/**
+
+- Says "Create your Free Account to Access the Blueprint App".
+- Works until the end of **Dec 25, 2026 (11:59 PM US Eastern)**, then shows "This link has expired".
+  Accounts already created keep working.
+- Sign-ups through it are tagged **Existing customer** in the Members tab (the server refuses the
+  tag after the deadline).
+- To change the date, edit `EXISTING_CUSTOMER_DEADLINE` in both `web/lib/offers.ts` and
+  `web/base44/shared/membership.ts`, then redeploy.
+
 ## For admins
 
 Log in with an admin account (`info@paydowndebtsolutions.com`) and open the **Members** tab:
@@ -45,8 +58,8 @@ npx base44 deploy --build           # publish
 | Path | What it is |
 |---|---|
 | `app/page.tsx` | Landing/login → Pay Down tool (or "access turned off" if revoked) |
-| `app/join/` | Create-your-account page |
-| `app/reset-password/` | Target page for password-reset emails |
+| `components/JoinScreen.tsx` | Create-your-account page (`/join/`, and `/existing/` for existing customers) |
+| `components/ResetPasswordScreen.tsx` | Password-reset page (`/reset-password/`) |
 | `components/AdminMembers.tsx` | Admin Members tab (revoke / restore) |
 | `components/AccountPanel.tsx` | My Account (change password) |
 | `components/tabs/` | The Pay Down tool itself |

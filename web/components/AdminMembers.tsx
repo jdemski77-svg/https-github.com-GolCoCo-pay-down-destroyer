@@ -8,6 +8,7 @@ interface Member {
   full_name: string | null;
   role: string;
   joined: string;
+  existing_customer?: boolean;
   status: 'active' | 'revoked';
 }
 
@@ -64,6 +65,9 @@ export default function AdminMembers() {
             <b>{members?.length ?? 0}</b> members
           </span>
           <span>
+            <b>{(members ?? []).filter((m) => m.existing_customer).length}</b> existing customers
+          </span>
+          <span>
             <b>{revokedCount}</b> revoked
           </span>
           <input
@@ -102,6 +106,9 @@ export default function AdminMembers() {
                   <td className="px-4 py-2">
                     <div className="font-semibold">{m.full_name || m.email}</div>
                     {m.full_name && <div className="text-xs text-gray-500">{m.email}</div>}
+                    {m.existing_customer && (
+                      <div className="text-xs font-semibold text-brand-blue">Existing customer</div>
+                    )}
                   </td>
                   <td className="px-4 py-2">
                     {isAdmin ? (

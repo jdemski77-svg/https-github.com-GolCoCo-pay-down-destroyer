@@ -31,6 +31,7 @@ export default async function (req: Request): Promise<Response> {
         full_name: u.full_name ?? null,
         role: u.role,
         joined: u.created_date,
+        existing_customer: u.signup_source === "existing_customer",
         status: revoked.has(String(u.email).toLowerCase()) ? "revoked" : "active",
       })),
     });
