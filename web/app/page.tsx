@@ -15,11 +15,11 @@ type Gate =
 
 /**
  * The members-area gate:
- *  - logged out          → landing page (Join + login)
- *  - logged in, unpaid   → paywall
- *  - logged in, member   → the Pay Down tool
- * Membership is re-checked on the server each time the app opens; the data itself is
- * also locked to active members on the server, so this screen is not the only guard.
+ *  - logged out   → landing page (create account + login)
+ *  - revoked      → "access turned off" screen
+ *  - otherwise    → the Pay Down tool
+ * Access is re-checked on the server each time the app opens; saved data is also
+ * locked on the server, so this screen is not the only guard.
  */
 export default function Home() {
   const [gate, setGate] = useState<Gate>({ kind: 'loading' });
@@ -34,7 +34,7 @@ export default function Home() {
       const me = await base44.auth.me();
       const user: AppUser = { id: me.id, email: me.email, full_name: me.full_name };
       const { status, admin } = await syncMembership().catch(() => ({
-        status: (me.membership_status ?? 'none') as MembershipStatus,
+        status: (me.membership_status === 'revoked' ? 'revoked' : 'active') as MembershipStatus,
         admin: me.role === 'admin',
       }));
       if (status === 'active' || admin) setGate({ kind: 'member', user, isAdmin: admin });
@@ -52,6 +52,6 @@ export default function Home() {
     return <div className="brand-bg flex h-screen items-center justify-center text-white/70">Loading…</div>;
   }
   if (gate.kind === 'loggedOut') return <LoginScreen onLoggedIn={refresh} />;
-  if (gate.kind === 'notMember') return <Paywall status={gate.status} email={gate.user.email} onCheckAgain={refresh} />;
+  if (gate.kind === 'notMember') return <Paywall onCheckAgain={refresh} />;
   return <AppScreen user={gate.user} isAdmin={gate.isAdmin} />;
 }

@@ -8,8 +8,8 @@
   "properties": {
     "membership_status": {
       "type": "string",
-      "enum": ["none", "active", "inactive", "revoked"],
-      "description": "Copied from MemberAccess for this user's email. active = can use the tool.",
+      "enum": ["active", "revoked"],
+      "description": "active = can use the tool. revoked = an admin turned access off.",
       "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
     },
     "membership_checked_at": {

@@ -8,8 +8,8 @@ import { syncMembership } from '@/lib/membership';
 type Step = 'loading' | 'form' | 'verify' | 'finishing';
 
 /**
- * Where buyers land after paying in GoHighLevel. They create their account here with the
- * email they paid with, confirm the emailed code, and go straight into the app.
+ * Where clients create their members-area account: email + password, confirm the
+ * emailed code, and they go straight into the app.
  */
 export default function JoinPage() {
   const [step, setStep] = useState<Step>('loading');
@@ -24,13 +24,13 @@ export default function JoinPage() {
 
   useEffect(() => {
     (async () => {
-      // Already logged in (an existing user who just paid): re-check and go in.
+      // Already logged in: go straight in.
       if (await base44.auth.isAuthenticated().catch(() => false)) {
         await syncMembership().catch(() => null);
         window.location.replace('/');
         return;
       }
-      // GoHighLevel's thank-you page can link here as /join/?email={{contact.email}}
+      // Links can prefill the email, e.g. /join/?email=client@example.com
       const fromLink = new URLSearchParams(window.location.search).get('email');
       if (fromLink) setEmail(fromLink.trim());
       setStep('form');
@@ -54,7 +54,7 @@ export default function JoinPage() {
     e.preventDefault();
     setError('');
     setInfo('');
-    if (!email.trim()) return setError('Please enter the email you paid with.');
+    if (!email.trim()) return setError('Please enter your email.');
     if (password.length < 8) return setError('Password must be at least 8 characters.');
     if (password !== confirm) return setError('Passwords do not match.');
     setBusy(true);
@@ -66,7 +66,7 @@ export default function JoinPage() {
       const status = errorStatus(err);
       setError(
         status === 409 || /exist/i.test(errorMessage(err, ''))
-          ? 'An account with this email already exists. Log in from the home page and your membership will be applied.'
+          ? 'An account with this email already exists. Log in from the home page instead.'
           : errorMessage(err, 'Could not create your account. Please try again.')
       );
     }
@@ -135,8 +135,7 @@ export default function JoinPage() {
 
   return (
     <AuthCard title="Create your account">
-      <p className="text-sm font-semibold text-brand-green">Thank you for joining!</p>
-      <p className="text-sm text-gray-600">Set up your login for the Pay Down members area.</p>
+      <p className="text-sm text-gray-600">Set up your login for the Pay Down Blueprint members area.</p>
       <form onSubmit={handleRegister} className="flex flex-col gap-3">
         <div>
           <label className="field-label">Email</label>
@@ -147,9 +146,6 @@ export default function JoinPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <p className="mt-1 text-xs text-gray-500">
-            Use the same email you paid with — that&apos;s how we find your membership.
-          </p>
         </div>
         <div>
           <label className="field-label">Your name (optional)</label>

@@ -1,8 +1,8 @@
 {
   "name": "Pay Down",
-  "description": "Members-only debt Pay Down planner. Visitors pay, create an account, then use the tool.",
-  // Public so visitors can reach the Join page and pay before they have an account.
-  // The tool itself and all saved data are locked to paid members (see entities/*.jsonc).
+  "description": "Members area for The Pay Down Blueprint clients.",
+  // Public so clients can reach the sign-up page before they have an account.
+  // Saved data is locked to each member, and to non-revoked members (see entities/*.jsonc).
   "visibility": "public",
   "site": {
     "installCommand": "npm install",

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 /* eslint-disable @next/next/no-img-element */
 import { base44, errorStatus } from '@/lib/base44Client';
-import { JOIN_URL } from '@/lib/membership';
 
 /** What logged-out visitors see: a Join button for new members and a login form for existing ones. */
 export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) {
@@ -97,23 +96,15 @@ export default function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) 
         <section className="flex flex-col gap-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <div className="rounded-lg bg-white p-6 text-gray-800 shadow-2xl">
             <h1 className="font-display text-2xl uppercase leading-tight text-brand-navy">
-              Eliminate debt. Reduce interest. <span className="text-brand-blue">Build freedom.</span>
+              Welcome to the <span className="text-brand-blue">members area</span>
             </h1>
             <p className="mt-2 text-sm text-gray-600">
-              Join the Pay Down Blueprint to unlock the members area and the Pay Down app.
+              Your Pay Down Blueprint tools, training and tracking in one place.
             </p>
-            {JOIN_URL && (
-              <a href={JOIN_URL} className="btn-primary mt-4 block w-full py-3 text-center text-base">
-                Join now
-              </a>
-            )}
-            <p className="mt-2 text-xs text-gray-500">
-              Already paid?{' '}
-              <a href="/join/" className="font-semibold text-brand-blue underline">
-                Create your account
-              </a>{' '}
-              with the email you paid with.
-            </p>
+            <a href="/join/" className="btn-primary mt-4 block w-full py-3 text-center text-base">
+              Create your account
+            </a>
+            <p className="mt-2 text-xs text-gray-500">First time here? Set up your login in under a minute.</p>
           </div>
 
           <form
