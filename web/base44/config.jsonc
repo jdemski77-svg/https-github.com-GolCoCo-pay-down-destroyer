@@ -1,6 +1,6 @@
 {
-  "name": "Pay Down",
-  "description": "Members area for The Pay Down Blueprint clients.",
+  "name": "Pay Down Blueprint App",
+  "description": "Access to the Pay Down Blueprint App!",
   // Public so clients can reach the sign-up page before they have an account.
   // Saved data is locked to each member, and to non-revoked members (see entities/*.jsonc).
   "visibility": "public",
