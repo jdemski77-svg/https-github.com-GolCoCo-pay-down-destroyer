@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { loadPlan, savePlan } from '@/lib/planStore';
+import { loadPlan } from '@/lib/planStore';
+import { useAutosave } from '@/components/useAutosave';
 import SaveBar from '@/components/SaveBar';
 import { IncomeCategory, IncomeEntry } from '@/lib/types';
 import {
@@ -41,10 +42,16 @@ export default function IncomeTab() {
   const [totalTouched, setTotalTouched] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [justSaved, setJustSaved] = useState(false);
+  const { markDirty, saveNow, dirty, saving, error, justSaved } = useAutosave(
+    'income',
+    () => ({
+      income_entries: CATEGORIES.flatMap((cat) =>
+        entries[cat].map((e) => ({ category: cat, slot: e.slot, source: e.source, amount: e.amount }))
+      ),
+      income_total: incomeTotal,
+    }),
+    'Failed to save income. Please try again.'
+  );
 
   useEffect(() => {
     let active = true;
@@ -92,12 +99,6 @@ export default function IncomeTab() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [computedTotal, loading]);
 
-  function markDirty() {
-    setDirty(true);
-    setJustSaved(false);
-    setError(null);
-  }
-
   function updateEntry(category: IncomeCategory, slot: number, field: 'source' | 'amount', value: string) {
     setEntries((prev) => {
       const list = prev[category].slice();
@@ -106,27 +107,6 @@ export default function IncomeTab() {
       return { ...prev, [category]: list };
     });
     markDirty();
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    setError(null);
-
-    const rows = CATEGORIES.flatMap((cat) =>
-      entries[cat].map((e) => ({ category: cat, slot: e.slot, source: e.source, amount: e.amount }))
-    );
-    try {
-      await savePlan({ income_entries: rows, income_total: incomeTotal });
-    } catch {
-      setError('Failed to save income. Please try again.');
-      setSaving(false);
-      return;
-    }
-
-    setSaving(false);
-    setDirty(false);
-    setJustSaved(true);
-    setTimeout(() => setJustSaved(false), 2500);
   }
 
   return (
@@ -181,7 +161,7 @@ export default function IncomeTab() {
         />
       </div>
 
-      <SaveBar dirty={dirty} saving={saving} error={error} justSaved={justSaved} onSave={handleSave} />
+      <SaveBar dirty={dirty} saving={saving} error={error} justSaved={justSaved} onSave={saveNow} />
     </div>
   );
 }

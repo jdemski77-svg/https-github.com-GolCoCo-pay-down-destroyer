@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { loadPlan, savePlan } from '@/lib/planStore';
+import { loadPlan } from '@/lib/planStore';
+import { useAutosave } from '@/components/useAutosave';
 import SaveBar from '@/components/SaveBar';
 import { CreditEntry, CreditType, LoanEntry, MonthlyBillEntry, UserSettings } from '@/lib/types';
 import {
@@ -74,10 +75,16 @@ export default function DebtsTab() {
   const [expTouched, setExpTouched] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [justSaved, setJustSaved] = useState(false);
+  const { markDirty, saveNow, dirty, saving, error, justSaved } = useAutosave(
+    'debts',
+    () => {
+      // income_total belongs to the Income tab, so it is not written here.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { user_id: _u, income_total: _i, ...debtSettings } = settings;
+      return { monthly_bills: bills, living_expenses: living, loans, credits, ...debtSettings };
+    },
+    'Failed to save debts. Please try again.'
+  );
 
   useEffect(() => {
     let active = true;
@@ -161,12 +168,6 @@ export default function DebtsTab() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [computedMonthlyExp, loading]);
 
-  function markDirty() {
-    setDirty(true);
-    setJustSaved(false);
-    setError(null);
-  }
-
   function updateSettings(patch: Partial<UserSettings>) {
     setSettings((s) => ({ ...s, ...patch }));
     markDirty();
@@ -201,26 +202,6 @@ export default function DebtsTab() {
       return list;
     });
     markDirty();
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    setError(null);
-
-    // income_total belongs to the Income tab, so it is not written here.
-    const { user_id: _u, income_total: _i, ...debtSettings } = settings;
-    try {
-      await savePlan({ monthly_bills: bills, living_expenses: living, loans, credits, ...debtSettings });
-    } catch {
-      setError('Failed to save debts. Please try again.');
-      setSaving(false);
-      return;
-    }
-
-    setSaving(false);
-    setDirty(false);
-    setJustSaved(true);
-    setTimeout(() => setJustSaved(false), 2500);
   }
 
   return (
@@ -351,7 +332,7 @@ export default function DebtsTab() {
         </div>
       </div>
 
-      <SaveBar dirty={dirty} saving={saving} error={error} justSaved={justSaved} onSave={handleSave} />
+      <SaveBar dirty={dirty} saving={saving} error={error} justSaved={justSaved} onSave={saveNow} />
     </div>
   );
 }

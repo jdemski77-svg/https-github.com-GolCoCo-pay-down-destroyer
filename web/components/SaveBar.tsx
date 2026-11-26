@@ -23,9 +23,9 @@ export default function SaveBar({
         ) : saving ? (
           <span className="text-gray-600">Saving…</span>
         ) : dirty ? (
-          <span className="font-semibold text-brand-red">You have unsaved changes</span>
+          <span className="text-gray-600">Changes save automatically…</span>
         ) : (
-          <span className="font-semibold text-brand-green">Saved</span>
+          <span className="font-semibold text-brand-green">All changes saved</span>
         )}
       </span>
       {(dirty || error) && (
@@ -34,7 +34,7 @@ export default function SaveBar({
           disabled={saving}
           className="rounded bg-brand-green px-5 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
         >
-          {saving ? 'Saving…' : 'Save'}
+          {saving ? 'Saving…' : error ? 'Try again' : 'Save now'}
         </button>
       )}
     </div>
