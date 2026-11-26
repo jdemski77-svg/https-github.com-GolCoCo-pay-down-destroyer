@@ -35,6 +35,7 @@ export interface LoanEntry {
   payment: number;
   balance: number;
   interest_rate: number;
+  /** Shown as "# of Payments Remaining" (field name kept so saved data still loads). */
   outstanding_interest: number;
 }
 

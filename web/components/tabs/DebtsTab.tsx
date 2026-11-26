@@ -251,7 +251,7 @@ export default function DebtsTab() {
                 <th className="p-1">Payment</th>
                 <th className="p-1">Balance</th>
                 <th className="p-1">Rate %</th>
-                <th className="p-1">Outstanding Interest</th>
+                <th className="p-1"># of Payments Remaining</th>
               </tr>
             </thead>
             <tbody>
@@ -270,7 +270,7 @@ export default function DebtsTab() {
                     <input className="field-input w-20" type="number" step="0.01" value={l.interest_rate || ''} onChange={(e) => updateLoan(l.slot, { interest_rate: Number(e.target.value) || 0 })} />
                   </td>
                   <td className="p-1">
-                    <input className="field-input w-28" type="number" step="0.01" value={l.outstanding_interest || ''} onChange={(e) => updateLoan(l.slot, { outstanding_interest: Number(e.target.value) || 0 })} />
+                    <input className="field-input w-28" type="number" min="0" step="1" inputMode="numeric" value={l.outstanding_interest || ''} onChange={(e) => updateLoan(l.slot, { outstanding_interest: Math.max(0, Math.round(Number(e.target.value) || 0)) })} />
                   </td>
                 </tr>
               ))}
