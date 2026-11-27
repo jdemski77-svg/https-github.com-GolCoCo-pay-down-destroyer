@@ -1,0 +1,187 @@
+﻿<UserControl x:Class="PayDown.CtrlPDOrgDebts"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PayDown.Views"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             xmlns:skinManager="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
+             skinManager:SfSkinManager.Theme="{skinManager:SkinManagerExtension ThemeName=Material3Light}"
+             mc:Ignorable="d" 
+             Loaded="UserControl_Loaded"
+             d:DesignHeight="450" d:DesignWidth="1448">
+    <ScrollViewer VerticalScrollBarVisibility="Visible" x:Name="scrollViewer" PreviewMouseWheel="scrollViewer_PreviewMouseWheel" Focusable="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="32"/>
+            </Grid.RowDefinitions>
+            <syncfusion:SfAccordion
+            x:Name="accordion"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Margin="10,4,10,0"
+            Cursor="Hand"
+            SelectionMode="OneOrMore">
+                <syncfusion:SfAccordion.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid Background="DarkRed" Opacity="1" Margin="-14,0,-31,0" Height="34">
+                            <TextBlock Foreground="white" TextWrapping="Wrap" Text="DEBTS AND EXPENSES" TextAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" FontFamily="Arial Black" Height="24" Margin="0,6,0,0" />
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfAccordion.HeaderTemplate>
+                <syncfusion:SfAccordionItem>
+                    <Grid HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock 
+                    Margin="4,4,4,4"
+                    HorizontalAlignment="Left"
+                    Foreground="Black"
+                    FontSize="14"
+                    TextWrapping="Wrap" >
+                        <Run Text="Jen: " FontWeight="Bold"/>
+                        <Run Text="This" />
+                        <Run Text="Organize Debts" FontWeight="Bold"/>
+                        <Run Text="page is your worksheet. You will change or delete any credit cards, loans, or balances that you payoff entirely or partially on this page. The changes will autofill in the" />
+                        <Run Text="Identify" FontWeight="Bold"/>
+                        <Run Text="and"/>
+                        <Run Text="Implement" FontWeight="Bold"/>
+                        <Run Text="pages."/><LineBreak/>
+                        <Run Text="Dan: " FontWeight="Bold"></Run>
+                        <Run Text="If you run out of available entries in a section, combine two or more separate Source and Amount entires into a single entry (The Sources you combine must be all Chargeable or Non-Chargeable - do not mix them together)."/><LineBreak/>
+                        <Run Text="Example1: " FontWeight="Bold"></Run>
+                        <Run Text="Combine Chargeable Expenses                    Netflix + Prime + HBO + Disney + Paramount = Streaming"/><LineBreak/>
+                        <Run Text="Example2: " FontWeight="Bold"></Run>
+                        <Run Text="Combine Non-Chargeable Expenses                    Car Loan1 + Car Loan2 = Car Loans"/>
+                        </TextBlock>
+                    </Grid>
+                </syncfusion:SfAccordionItem>
+            </syncfusion:SfAccordion>
+
+            <Grid Grid.Row="1" Margin="24,8,24,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="32"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="0,0,4,0" Grid.Column="0" TextWrapping="Wrap" Text="Lease or Rent Payment" VerticalAlignment="Center" TextAlignment="Right" FontSize="18" FontWeight="Bold"/>
+                    <syncfusion:CurrencyTextBox
+                    x:Name="ctbxMortgage"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    IsReadOnly="False"
+                    Culture="en-US"
+                    LostFocus="ctbxMortgage_LostFocus"
+                    CurrencyPositivePattern="2"
+                    Value="0" Grid.ColumnSpan="2" Margin="228,0,0,0" />
+                    <TextBlock Margin="180,0,4,0" Grid.Column="3" TextWrapping="Wrap" Text="Chargeable Expenses" VerticalAlignment="Center" TextAlignment="Right" FontSize="18" FontWeight="Bold"/>
+                    <syncfusion:CurrencyTextBox
+                        x:Name="ctbxChargeExpsenses"
+                        Grid.Column="4"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        IsReadOnly="True"
+                        CurrencyPositivePattern="2"
+                    Culture="en-US"
+                        ValueChanged="ctbxChargeExpsenses_ValueChanged"
+                        Value="0" />
+                    <TextBlock Margin="32,0,4,0" Grid.Column="5" TextWrapping="Wrap" Text="Non-chargeable Expenses" VerticalAlignment="Bottom" TextAlignment="Right" FontSize="18" FontWeight="Bold" Grid.ColumnSpan="2" Height="29" />
+                    <syncfusion:CurrencyTextBox
+                     x:Name="ctbxNonChargeableExpense"
+                     Grid.Column="7"
+                     FontSize="18"
+                     FontWeight="Bold"
+                     IsReadOnly="True"
+                     CurrencyPositivePattern="2"
+                    Culture="en-US"
+                     ValueChanged="ctbxNonChargeableExpense_ValueChanged"
+                     Value="0" />
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="24"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="0,6,4,1" Grid.Column="0" TextWrapping="Wrap" Text="Credit Score 1" TextAlignment="Right" FontSize="18" FontWeight="Bold"/>
+                    <syncfusion:SfTextBoxExt
+                             x:Name="ntbxCreditScore1"
+                             Grid.Column="1"
+                             FontSize="16"
+                             FontWeight="Bold"
+                             IsReadOnly="False"
+                             TextChanged="ntbxCreditScore1_TextChanged" Margin="0,10,0,0"
+                             />
+
+                    <TextBlock Margin="0,6,4,1" Grid.Column="3" TextWrapping="Wrap" Text="Credit Score 2" TextAlignment="Right" FontSize="18" FontWeight="Bold"/>
+                    <syncfusion:SfTextBoxExt
+                                 x:Name="ntbxCreditScore2"
+                                 Grid.Column="4"
+                                 FontSize="16"
+                                 FontWeight="Bold"
+                                 IsReadOnly="False"
+                                 TextChanged="ntbxCreditScore2_TextChanged" Margin="0,10,0,0"
+                                 />
+
+                    <TextBlock Margin="0,6,4,1" Grid.Column="6" TextWrapping="Wrap" Text="Total Debt" TextAlignment="Right" FontSize="18" FontWeight="Bold"/>
+                    <syncfusion:CurrencyTextBox
+                        x:Name="ctbxTotalDebt"
+                        Grid.Column="7"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        IsReadOnly="True"
+                        ValueChanged="ctbxTotalDebt_ValueChanged"
+                        CurrencyPositivePattern="2"
+                    Culture="en-US"
+                        Value="0" />
+                    <TextBlock Margin="0,6,4,1" Grid.Column="9" TextWrapping="Wrap" Text="Total Monthly Expenses" TextAlignment="Right" FontSize="18" FontWeight="Bold"
+                        />
+                    <syncfusion:CurrencyTextBox
+                     x:Name="ctbxTotalMonthlyExpense"
+                     Grid.Column="10"
+                     FontSize="18"
+                     FontWeight="Bold"
+                     ValueChanged="ctbxTotalMonthlyExpense_ValueChanged"
+                     IsReadOnly="True"
+                     CurrencyPositivePattern="2"
+                    Culture="en-US"
+                     Value="0" />
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="mainGrid" Grid.Row="2" Margin="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

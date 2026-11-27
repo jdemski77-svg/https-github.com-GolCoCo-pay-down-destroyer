@@ -1,0 +1,68 @@
+// One record per member: everything they enter in the Pay Down tool.
+// Only the owner can read or write it, and only while their membership is active
+// (admins can use the tool without paying, but still only see their own plan).
+{
+  "name": "PayDownPlan",
+  "type": "object",
+  "properties": {
+    "income_entries": {
+      "type": "array",
+      "description": "Income rows: category (paycheck|retirement|governmental|checking), slot, source, amount",
+      "items": { "type": "object" }
+    },
+    "monthly_bills": {
+      "type": "array",
+      "description": "Monthly bill rows: slot, chargeable, source, amount",
+      "items": { "type": "object" }
+    },
+    "living_expenses": {
+      "type": "array",
+      "description": "Living expense rows: slot, chargeable, source, amount",
+      "items": { "type": "object" }
+    },
+    "loans": {
+      "type": "array",
+      "description": "Loan rows: slot, source, payment, balance, interest_rate, outstanding_interest",
+      "items": { "type": "object" }
+    },
+    "credits": {
+      "type": "array",
+      "description": "Credit card / line of credit rows: slot, source, payment, balance, interest_rate, credit_limit, type (CC|LOC)",
+      "items": { "type": "object" }
+    },
+    "income_total": { "type": "number", "default": 0 },
+    "mortgage_rent_payment": { "type": "number", "default": 0 },
+    "total_monthly_exp": { "type": "number", "default": 0 },
+    "total_debts": { "type": "number", "default": 0 },
+    "chargeable_expenses": { "type": "number", "default": 0 },
+    "non_chargeable_expenses": { "type": "number", "default": 0 },
+    "credit_score_1": { "type": "string", "default": "" },
+    "credit_score_2": { "type": "string", "default": "" }
+  },
+  "rls": {
+    "read": {
+      "$and": [
+        { "created_by_id": "{{user.id}}" },
+        { "$or": [ { "user_condition": { "data.membership_status": "active" } }, { "user_condition": { "role": "admin" } } ] }
+      ]
+    },
+    "create": {
+      "$and": [
+        { "created_by_id": "{{user.id}}" },
+        { "$or": [ { "user_condition": { "data.membership_status": "active" } }, { "user_condition": { "role": "admin" } } ] }
+      ]
+    },
+    "update": {
+      "$and": [
+        { "created_by_id": "{{user.id}}" },
+        { "$or": [ { "user_condition": { "data.membership_status": "active" } }, { "user_condition": { "role": "admin" } } ] }
+      ]
+    },
+    "delete": {
+      "$and": [
+        { "created_by_id": "{{user.id}}" },
+        { "$or": [ { "user_condition": { "data.membership_status": "active" } }, { "user_condition": { "role": "admin" } } ] }
+      ]
+    }
+  }
+}

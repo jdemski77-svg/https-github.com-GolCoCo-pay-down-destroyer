@@ -1,0 +1,24 @@
+// Admin revokes, one record per email. Everyone who signs up has access unless
+// their email is revoked here. Only admins and the server can read or change it.
+{
+  "name": "MemberAccess",
+  "type": "object",
+  "properties": {
+    "email": { "type": "string", "format": "email", "description": "Buyer email, stored lowercase" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "revoked"],
+      "description": "revoked = an admin turned access off. active = restored."
+    },
+    "source": { "type": "string", "description": "Who last changed this record" },
+    "full_name": { "type": "string" },
+    "last_event": { "type": "string", "description": "Last admin action, for your records" }
+  },
+  "required": ["email", "status"],
+  "rls": {
+    "read": { "user_condition": { "role": "admin" } },
+    "create": { "user_condition": { "role": "admin" } },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

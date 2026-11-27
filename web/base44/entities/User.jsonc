@@ -1,0 +1,28 @@
+// Custom fields on the built-in User entity.
+// These fields are write-locked: members can't change them from the app (not even
+// with updateMe). Only the backend functions and the app's editors in the Base44
+// dashboard can. PayDownPlan's access rules trust membership_status.
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "membership_status": {
+      "type": "string",
+      "enum": ["active", "revoked"],
+      "description": "active = can use the tool. revoked = an admin turned access off.",
+      "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
+    },
+    "signup_source": {
+      "type": "string",
+      "enum": ["existing_customer"],
+      "description": "existing_customer = signed up through the existing-customer link before it expired.",
+      "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
+    },
+    "membership_checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time the server re-checked this member's access.",
+      "rls": { "update": { "user_condition": { "collaborator_role": "editor" } } }
+    }
+  }
+}

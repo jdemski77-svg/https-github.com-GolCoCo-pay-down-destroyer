@@ -1,0 +1,13 @@
+{
+  "name": "Pay Down Blueprint App",
+  "description": "Access to the Pay Down Blueprint App!",
+  // Public so clients can reach the sign-up page before they have an account.
+  // Saved data is locked to each member, and to non-revoked members (see entities/*.jsonc).
+  "visibility": "public",
+  "site": {
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "serveCommand": "npm run dev",
+    "outputDirectory": "./out"
+  }
+}
